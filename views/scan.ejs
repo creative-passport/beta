@@ -1,0 +1,135 @@
+<!-- views/profile -->
+<!-- Basing a profile page from the following example: https://www.bootdey.com/snippets/view/bs4-profile-with-messages-and-edit -->
+<!-- Creative Passport Beta v8 -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <% include ./partials/head %>
+
+    <script>
+    function cleanUp() {
+        qrScanner.destroy();
+        qrScanner = null;
+    }
+    </script>
+</head>
+
+<body>
+    <header>
+        <% include ./partials/header %>
+    </header>
+
+    <main>
+        <div class="container">
+            <div class="row">
+
+                        <div class="card">
+                            <div class="card-body text-center bg-primary rounded-top">
+                                <div class="user-box">
+                                    <!-- Display Mycelia Logo until replaced by user picture -->
+                                    <img src="/images/CP_LOGOS/128x128/CP-Logo-TransCol128x128.png" alt="user avatar">
+                                </div>
+                                <div id="scanner">
+                                    <h1>Scan A Passport:</h1>
+<div>
+    <span id="cam-has-camera"></span>
+    <br>
+    <video muted playsinline id="qr-video"></video>
+</div>
+
+<div id="connecting" style="display:none">
+<!--- 
+    <b>Detected QR code: </b>
+<span id="cam-qr-result">None</span>
+<br>
+<b>Last detected at: </b>
+<span id="cam-qr-result-timestamp"></span>
+<hr>
+-->
+    <p>Connect with <span id="targetName"></span></p>
+<form method="post" action="/api/user/relationship">
+    <div class="form-group row">
+        <input type="hidden" id="fromId" name="fromId" value="<%= user._id %>">
+        <input type="hidden" id="targetId" name="targetId" value="">
+        <label class="col-lg-3 col-form-label form-control-label">Relationship</label>
+        <div class="col-lg-9">
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="relationship" id="relationshipWorked"
+                    value="Worked" checked>
+                <label class="form-check-label" for="relationshipWorked">
+                    I have worked with them.
+                </label>
+            </div>
+            <div class="form-check">
+            <input class="form-check-input" type="radio" name="relationship" id="relationshipKnow"
+                value="Know">
+            <label class="form-check-label" for="relationshipKnow">
+                I know them
+            </label>
+            </div>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-lg-3 col-form-label form-control-label"></label>
+        <div class="col-lg-9">
+            <input type="reset" class="btn btn-secondary" value="Cancel">
+            <input type="submit" class="btn btn-primary" value="Save Changes">
+        </div>
+    </div>
+</div>
+
+<a href="/profile" class="btn btn-primary link_button" role="button" onclick="cleanUp()">Back</a>
+
+<script type="module">
+    import QrScanner from "/js/qr-scanner.min.js";
+    QrScanner.WORKER_PATH = '/js/qr-scanner-worker.min.js';
+
+    const video = document.getElementById('qr-video');
+    //const camHasCamera = document.getElementById('cam-has-camera');
+    const camQrResult = document.getElementById('cam-qr-result');
+    const camQrResultTimestamp = document.getElementById('cam-qr-result-timestamp');
+
+    const formTargetName = document.getElementById('targetName');
+    const formTargetID = document.getElementById('targetId');
+
+    function setResult(label, result) {
+        toggleDiv('connecting');
+
+        console.log(result);
+        var contents = result.split(":");
+        console.log(contents);
+        console.log(contents[0]);
+        console.log(contents[1]);
+
+        formTargetName.textContent = contents[0];
+        formTargetID.value = contents[1];
+        scanner.stop();
+        //label.textContent = result;
+        //camQrResultTimestamp.textContent = new Date().toString();
+        //label.style.color = 'teal';
+        //clearTimeout(label.highlightTimeout);
+        //label.highlightTimeout = setTimeout(() => label.style.color = 'inherit', 100);
+    }
+
+    // ####### Web Cam Scanning #######
+
+    //QrScanner.hasCamera().then(hasCamera => camHasCamera.textContent = hasCamera);
+
+    const scanner = new QrScanner(video, result => setResult(camQrResult, result), 100);
+    scanner.start();
+
+
+</script>
+                                </div>
+                            </div>
+                        </div>
+                    
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <% include ./partials/footer %>
+    </footer>
+    </body>

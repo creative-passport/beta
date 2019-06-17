@@ -1,0 +1,67 @@
+<!-- views/register -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <% include ./partials/head %>
+</head>
+
+<body class="container">
+
+    <header>
+        <% include ./partials/header %>
+    </header>
+
+    <main>
+        <div class="jumbotron">
+            <h1>Start your Creative Passport here:</h1>
+            <h2><%= message %></h2>
+            <form method="post" action="/api/user/register" class="form-horizontal" oninput='password2.setCustomValidity(password2.value != password.value ? "Passwords do not match." : "")'>
+                <div class="form-group">
+                    <div class="col-sm-10">
+                        <div class="col-sm-10 form-item">
+                            <label for='username'>Email:</label>
+                            <input class='form-control' type='email' name='username' placeholder="email address" required="required" data-error="Valid email is required.">
+                        </div>
+                        <div class="col-sm-10 form-item">
+                            <label for='password1'>Password:</label>
+                            <input class='form-control' id='password1' type='password' name='password' required="required">
+                        </div>
+                        <div class="col-sm-10 form-item">
+                            <label for='password2'>Confirm Password:</label>
+                            <input class='form-control' id='password2' type='password' name='password2'>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-10 form-item">
+                        <div class="checkbox">
+                            <label>
+                                <input name='policy' type="checkbox">
+                                 I agree to the Creative Passport <a href="https://policies.creativepassport.net/">Data
+                                     and Privacy Policies</a>, including allowing Creative Passport to contact me on
+                                 this email address about my passport account. Creative Passport will not sell or pass
+                                 on your data without your express permission. It is Your Data.
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10 form-item">
+                        <p>
+                            <button type="submit" name="submit" id="submit" class="btn btn-primary">Create User</button>
+                        </p>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <footer>
+        <% include ./partials/footer %>
+    </footer>
+
+</body>
+
+</html>

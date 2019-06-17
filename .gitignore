@@ -1,0 +1,7 @@
+.env
+ibm_credentials.env
+server.cert 
+server.key 
+deploy_beta.sh
+deploy_stage.sh
+node_modules

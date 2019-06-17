@@ -1,0 +1,381 @@
+<!-- views/profile -->
+<!-- Basing a profile page from the following example: https://www.bootdey.com/snippets/view/bs4-profile-with-messages-and-edit -->
+<!-- Creative Passport Beta v8 -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <% include ./partials/head %>
+
+</head>
+<body>
+<header>
+    <% include ./partials/header %>
+</header>
+
+<main>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="profile-card-4 z-depth-3">
+                <div class="card">
+                    <div class="card-body text-center bg-primary rounded-top">
+                        <div class="user-box">
+                            <!-- Display Mycelia Logo until replaced by user picture -->
+                            <img src="/images/CP_LOGOS/128x128/CP-Logo-TransCol128x128.png"
+                                alt="user avatar">
+                        </div>
+                        <!-- Name -->
+                        <h5 class="mb-1 text-white"><% if (locals.user.persona) { %>
+                            <%= locals.user.persona %>
+                            <% } %></h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group shadow-none">
+                            <li class="list-group-item">
+                                <div class="list-icon">
+                                    <i class="fa fa-envelope"></i>
+                                </div>
+                                <div class="list-details">
+                                    <span><%= user.username %></span>
+                                    <small>Email Address</small>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="list-icon">
+                                    <i class="fa fa-globe"></i>
+                                </div>
+                                <div class="list-details">
+                                    <span><%= date.toDateString() %></span>
+                                    <small>Date Joined</small>
+                                </div>
+                            </li>
+                        </ul>
+                        <div class="row text-center mt-4">
+                            <div class="col p-2">
+                                
+                            </div>
+                            <div class="col p-2">
+                                <% if (locals.user.wallet_id_ibm) { %>
+                                    <p>
+                                        <a href="/issue" class="btn btn-primary link_button" role="button">Issue Credential (IBM)</a>
+                                    </p>
+                                <% } %>
+                            </div>
+                            <div class="col p-2">
+                                
+                            </div>
+                        </div>
+                        <div class="row text-center mt-4">
+                            <div class="col p-2">
+                                <h4 class="mb-1 line-height-5">n/a</h4>
+                                <small class="mb-0 font-weight-bold">Connections</small>
+                            </div>
+                            <div class="col p-2">
+                                <h4 class="mb-1 line-height-5">n/a</h4>
+                                <small class="mb-0 font-weight-bold">Followers</small>
+                            </div>
+                            <div class="col p-2">
+                                <h4 class="mb-1 line-height-5">n/a</h4>
+                                <small class="mb-0 font-weight-bold">Views</small>
+                            </div>
+                        </div>
+                        <div class="row text-center mt-4">
+                        <div id="qrcode" style="display:none">
+
+                        </div>
+                        <script type="text/javascript">
+                            new QRCode(document.getElementById("qrcode"), "<%= user.persona %>:<%= user._id %>");
+                        </script>
+                        </div>
+                        <div class="row text-center mt-4">
+                            <div class="col p-2">
+                                <span class="btn btn-primary link_button" onclick="toggleDiv('qrcode')">Toggle QR</span>
+                            </div>
+                            <div class="col p-2">
+                                
+                            </div>
+                            <div class="col p-2">
+                                <a href="/scan" class="btn btn-primary link_button" role="button">Scan a passport</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer text-center">
+                        <a href="javascript:void()" class="btn-social btn-facebook waves-effect waves-light m-1"><i
+                                class="fa fa-facebook"></i></a>
+                        <a href="javascript:void()" class="btn-social btn-google-plus waves-effect waves-light m-1"><i
+                                class="fa fa-google-plus"></i></a>
+                        <a href="javascript:void()"
+                            class="list-inline-item btn-social btn-behance waves-effect waves-light"><i
+                                class="fa fa-behance"></i></a>
+                        <a href="javascript:void()"
+                            class="list-inline-item btn-social btn-dribbble waves-effect waves-light"><i
+                                class="fa fa-dribbble"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-8">
+            <div class="card z-depth-3">
+                <div class="card-body">
+                    <ul class="nav nav-pills nav-pills-primary nav-justified">
+                        <li class="nav-item">
+                            <a href="javascript:void();" data-target="#profile" data-toggle="pill"
+                                class="nav-link active show"><i class="icon-user"></i> <span
+                                    class="hidden-xs">Profile</span></a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="javascript:void();" data-target="#codes" data-toggle="pill" class="nav-link"><i
+                                    class="icon-note"></i> <span class="hidden-xs">Other Identifiers</span></a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="javascript:void();" data-target="#edit" data-toggle="pill" class="nav-link"><i
+                                    class="icon-note"></i> <span class="hidden-xs">Edit</span></a>
+                        </li>
+                    </ul>
+                    <div class="tab-content p-3">
+                        <div class="tab-pane active show" id="profile">
+                            <h5 class="mb-3">Passport Profile</h5>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h6>About</h6>
+                                    <p>
+                                        <% if (locals.user.basic_biog) { %><%- locals.user.basic_biog %><% } %>
+                                    </p>
+                                    <h6>Skills</h6>
+                                    <p>
+                                        <% if (locals.user.skills) { %><%- locals.user.skills %><% } %>
+                                    </p>
+                                    <h6>Interests</h6>
+                                    <p>
+                                        <% if (locals.user.interests) { %><%- locals.user.interests %><% } %>
+                                    </p>
+                                    
+                                </div>
+                                <div class="col-md-12">
+                                    <!--
+                                    <h6>Recent badges</h6>
+                                    <a href="javascript:void();" class="badge badge-dark badge-pill">html5</a>
+                                    <a href="javascript:void();" class="badge badge-dark badge-pill">react</a>
+                                    <a href="javascript:void();" class="badge badge-dark badge-pill">codeply</a>
+                                    <a href="javascript:void();" class="badge badge-dark badge-pill">angularjs</a>
+                                    <a href="javascript:void();" class="badge badge-dark badge-pill">css3</a>
+                                    <a href="javascript:void();" class="badge badge-dark badge-pill">jquery</a>
+                                    <a href="javascript:void();" class="badge badge-dark badge-pill">bootstrap</a>
+                                    <a href="javascript:void();"
+                                        class="badge badge-dark badge-pill">responsive-design</a>
+                                    <hr>
+                                    <span class="badge badge-primary"><i class="fa fa-user"></i> 900 Followers</span>
+                                    <span class="badge badge-success"><i class="fa fa-cog"></i> 43 Forks</span>
+                                    <span class="badge badge-danger"><i class="fa fa-eye"></i> 245 Views</span>
+                                    -->
+                                </div>
+                                <div class="col-md-12">
+                                    <!--
+                                    Activity List - The example profile showed an activity list, this is something we want
+                                    in the Creative Passport to show activity around data.
+                                    <h5 class="mt-2 mb-3"><span class="fa fa-clock-o ion-clock float-right"></span>
+                                        Recent Activity</h5>
+                                    <table class="table table-hover table-striped">
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <strong>Abby</strong> joined ACME Project Team in
+                                                    <strong>`Collaboration`</strong>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <strong>Gary</strong> deleted My Board1 in
+                                                    <strong>`Discussions`</strong>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <strong>Kensington</strong> deleted MyBoard3 in
+                                                    <strong>`Discussions`</strong>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <strong>John</strong> deleted My Board1 in
+                                                    <strong>`Discussions`</strong>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <strong>Skell</strong> deleted his post Look at Why this is.. in
+                                                    <strong>`Discussions`</strong>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    -->
+                                </div>
+                            </div>
+                            <!--/row-->
+                        </div>
+                        <div class="tab-pane" id="codes">
+                            <h5 class="mb-3">Other Identifiers</h5>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h6>ISNI</h6>
+                                    <p>
+                                        <% if (locals.user.identifiers.isni) { %>
+                                        <%= locals.user.identifiers.isni %>
+                                        <% } %>
+                                    </p>
+                                    <h6>PPL (UK)</h6>
+                                    <p>
+                                        <% if (locals.user.identifiers.ppl_id) { %><%- locals.user.identifiers.ppl_id %><% } %>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane" id="edit">
+                            <form method="post" action="/api/user/update/<%= user._id %>">
+                                <div class="form-group row">
+                                    <label class="col-lg-3 col-form-label form-control-label">Persona name</label>
+                                    <div class="col-lg-9">
+                                        <input class="form-control" type="text" value="<% if (locals.user.persona) { %><%- locals.user.persona %><% } %>" name="persona" placeholder="Your Public Persona Name">
+                                    </div>
+                                </div>
+                                <!--
+                                <div class="form-group row">
+                                    <label class="col-lg-3 col-form-label form-control-label">Real name</label>
+                                    <div class="col-lg-9">
+                                        <input class="form-control" type="text" value="<% if (locals.user.real) { %><%- locals.user.real %><% } %>" name="real">
+                                    </div>
+                                </div>
+                                -->
+                                <div class="form-group row">
+                                    <label class="col-lg-3 col-form-label form-control-label">About (a brief biography)</label>
+                                    <div class="col-lg-9">
+                                        <textarea class="form-control" 
+                                            name="basic_biog"><% if (locals.user.basic_biog) { %><%- locals.user.basic_biog %><% } %></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-lg-3 col-form-label form-control-label">Email</label>
+                                    <div class="col-lg-9">
+                                        <input class="form-control" type="email" value="<%= user.username %>" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-lg-3 col-form-label form-control-label">Skills</label>
+                                    <div class="col-lg-9">
+                                        <input class="form-control" name="skills" value="<% if (locals.user.skills) { %><%- locals.user.skills %><% } %>" data-role="tagsinput">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-lg-3 col-form-label form-control-label">Interests</label>
+                                    <div class="col-lg-9">
+                                        <input class="form-control" name="interests" value="<% if (locals.user.interests) { %><%- locals.user.interests %><% } %>" data-role="tagsinput">
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group row">
+                                    <label class="col-lg-9 col-form-label form-control-label">Wallet Information (alpha)</label>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-lg-3 col-form-label form-control-label">IBM Credential Wallet URL</label>
+                                    <div class="col-lg-9">
+                                        <input class="form-control" type="text" value="<% if (locals.user.wallet_id_ibm) { %><%- locals.user.wallet_id_ibm %><% } %>" name="wallet_id_ibm">
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group row">
+                                    <label class="col-lg-9 col-form-label form-control-label">Other Identifiers</label>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-lg-3 col-form-label form-control-label">ISNI <a href="https://www.isni.org/" class="external_link">[ https://www.isni.org/ ]</a></label>
+                                    <div class="col-lg-9">
+                                        <input class="form-control" type="text" value="<% if (locals.user.identifiers.isni) { %><%- locals.user.identifiers.isni %><% } %>" name="isni">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-lg-3 col-form-label form-control-label">PPL (UK)<a
+                                            href="https://www.ppluk.com/" class="external_link">[ https://www.ppluk.com/
+                                            ]</a></label>
+                                    <div class="col-lg-9">
+                                        <input class="form-control" type="text" value="<% if (locals.user.identifiers.ppl_id) { %><%- locals.user.identifiers.ppl_id %><% } %>" name="ppl_id">
+                                    </div>
+                                </div>
+                                <!--
+                                <div class="form-group row">
+                                    <label class="col-lg-3 col-form-label form-control-label">Change profile</label>
+                                    <div class="col-lg-9">
+                                        <input class="form-control" type="file">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-lg-3 col-form-label form-control-label">Website</label>
+                                    <div class="col-lg-9">
+                                        <input class="form-control" type="url" value="">
+                                    </div>
+                                </div>
+                                -->
+
+                                <!--
+                                <div class="form-group row">
+                                    <label class="col-lg-3 col-form-label form-control-label">Address</label>
+                                    <div class="col-lg-9">
+                                        <input class="form-control" type="text" value="" placeholder="Street">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-lg-3 col-form-label form-control-label"></label>
+                                    <div class="col-lg-6">
+                                        <input class="form-control" type="text" value="" placeholder="City">
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <input class="form-control" type="text" value="" placeholder="State">
+                                    </div>
+                                </div>
+                                -->
+
+                                <!--
+                                <div class="form-group row">
+                                    <label class="col-lg-3 col-form-label form-control-label">Password</label>
+                                    <div class="col-lg-9">
+                                        <input class="form-control" type="password" value="11111122333">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-lg-3 col-form-label form-control-label">Confirm password</label>
+                                    <div class="col-lg-9">
+                                        <input class="form-control" type="password" value="11111122333">
+                                    </div>
+                                </div>
+                                -->
+                                <div class="form-group row">
+                                    <label class="col-lg-3 col-form-label form-control-label"></label>
+                                    <div class="col-lg-9">
+                                        <input type="reset" class="btn btn-secondary" value="Cancel">
+                                        <input type="submit" class="btn btn-primary" value="Save Changes">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="news">
+        <h1>Thank You</h1>
+        <p>for creating your Creative Passport Account. Over the next couple of weeks we will be adding a lot more to
+            this
+            profile page, so you can add some more details about yourself, as well as sign each others passports.</p>
+    </div>
+</div>
+
+
+
+</main>
+
+<footer>
+    <% include ./partials/footer %>
+</footer>
+</body>
