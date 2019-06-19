@@ -78,6 +78,9 @@ switch (process.argv[2]) {
     case 'publishDefinition':
         publishCredentialDefinition();
         break;
+    case 'publishProofSchema':
+        publishProofSchema();
+        break;
     default:
         break;
 }
