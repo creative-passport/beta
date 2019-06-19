@@ -153,6 +153,23 @@ function isUserAuthenticated(req, res, next) {
     }
 }
 
+function userWalletAddress(email) {
+    User.findOne({
+        username: email
+    }, function (err, user) {
+        if (err) {
+            return done(err);
+        }
+        if (!user) {
+            return done(null);
+        }
+        if (!user.wallet_id_ibm){
+            return done(null);
+        }
+        
+        return done(user.wallet_id_ibm);
+    });
+}
 function displayTidyLists(list) {
     var items = list.split(',');
     
@@ -231,6 +248,33 @@ app.post('/login',
         failureRedirect: '/error'
     }));
 
+app.post('/credential_auth', async (req, res) => {
+    // Request a verification credential from the user
+    try {
+        // Check the username and password by hitting the API
+        const agentInfo = await agent.getIdentity();
+        console.log(`Agent info: ${JSON.stringify(agentInfo, 0, 1)}`);
+    } catch (err) {
+        console.log(err);
+    }
+
+    try {
+        // Check / Get the wallet address for that email address
+        var to = {
+            url: userWalletAddress(req.body.email);
+        };
+
+        const connection_offer = await agent.createConnection(to);
+        const accepted_connection = await agent.waitForConnection(connection_offer.id);
+        console.log(`Accepted Connection: ${JSON.stringify(accepted_connection, 0, 1)}`);
+        var didto = {
+            did: accepted_connection.remote.pairwise.did
+        };
+
+        const proof_request = await agent.createVerification(to, proof_schema.id, 'outbound_proof_request');
+        const finished_verification = await agent.waitForVerification(proof_request.id);
+    }
+});
 
 app.get('/issue', isUserAuthenticated, async (req, res) => {
     try {
@@ -316,14 +360,13 @@ app.use((err, req, res) => {
 */
 
 // For deployment
-app.listen(port, () => console.log(`Creative Passport Core Services listening on port ${port}!`));
+//app.listen(port, () => console.log(`Creative Passport Core Services listening on port ${port}!`));
 
 // Running locally on development machine
-/*
+
 https.createServer({
         key: fs.readFileSync('server.key'),
         cert: fs.readFileSync('server.cert')
     }, app).listen(port, () => {
     console.log(`Creative Passport Core Services listening on port ${port}!`)
 });
-*/
