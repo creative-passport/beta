@@ -78,6 +78,7 @@ const account_url = process.env.IBM_CREDENTIAL_URL;
 const agent_name = process.env.IBM_CREDENTIAL_AGENT_NAME;
 const agent_password = process.env.IBM_CREDENTIAL_AGENT_PASSWORD;
 const cred_def_id = process.env.IBM_CREDENTIAL_DEF_ID;
+const proof_schema_id = process.env.IBM_PROOF_SCHEMA_ID;
 
 // Check values on console
 console.log(account_url);
@@ -154,22 +155,28 @@ function isUserAuthenticated(req, res, next) {
 }
 
 function userWalletAddress(email) {
+    console.log('Finding user with email address: ' + email);
     User.findOne({
         username: email
     }, function (err, user) {
         if (err) {
+            console.log(err);
             return done(err);
         }
         if (!user) {
+            console.log('No User Found!');
             return done(null);
         }
         if (!user.wallet_id_ibm){
+            console.log('No Wallet URL');
             return done(null);
         }
         
-        return done(user.wallet_id_ibm);
+        console.log('Wallet URL to be returned to calling function: ' + user.wallet_id_ibm);
+        return new Promise(user.wallet_id_ibm);
     });
 }
+
 function displayTidyLists(list) {
     var items = list.split(',');
     
@@ -249,6 +256,8 @@ app.post('/login',
     }));
 
 app.post('/credential_auth', async (req, res) => {
+    console.log('Submitted Email Address : ' + req.body.email);
+
     // Request a verification credential from the user
     try {
         // Check the username and password by hitting the API
@@ -260,9 +269,14 @@ app.post('/credential_auth', async (req, res) => {
 
     try {
         // Check / Get the wallet address for that email address
+        //var walletAddress = await userWalletAddress(req.body.email);
+        //console.log('The given wallet address is : ' + walletAddress);
+        var user = await User.findOne({username: req.body.email}).exec();
+
         var to = {
-            url: userWalletAddress(req.body.email);
+            url: user.wallet_id_ibm
         };
+    
 
         const connection_offer = await agent.createConnection(to);
         const accepted_connection = await agent.waitForConnection(connection_offer.id);
@@ -271,10 +285,29 @@ app.post('/credential_auth', async (req, res) => {
             did: accepted_connection.remote.pairwise.did
         };
 
-        const proof_request = await agent.createVerification(to, proof_schema.id, 'outbound_proof_request');
+        const proof_request = await agent.createVerification(didto, proof_schema_id, 'outbound_proof_request');
+        console.log(proof_request);
         const finished_verification = await agent.waitForVerification(proof_request.id);
+        console.log(finished_verification);
+
+        const opts = {
+            state: 'inbound_proof_request'
+        };
+
+        const inbound_proof_requests = await agent.getVerifications(opts);
+        console.log(inbound_proof_requests);
+        for (const index in inbound_proof_requests) {
+            const verification = inbound_proof_requests[index];
+            console.log(verification);
+            await agent.updateVerification(verification.id, 'proof_generated');
+            await agent.updateVerification(verification.id, 'proof_shared');
+        }
+    } catch (error) {
+        console.log(error);
     }
+    res.redirect('/');
 });
+
 
 app.get('/issue', isUserAuthenticated, async (req, res) => {
     try {

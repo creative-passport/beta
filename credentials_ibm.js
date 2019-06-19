@@ -49,6 +49,26 @@ const publishProofSchema = async () => {
     return "done";
 }
 
+// Only need to run this once against an account
+const publishProofSchemav2 = async () => {
+    const name = "Creative Passport Login request";
+    const version = "0.0.3";
+    const requested_attributes = {
+        email: {
+            name: 'email',
+            restrictions: [
+                {
+                    cred_def_id: '4qN9JsboqtsscYLKzTw6wS:3:CL:356:TAG1'
+                }
+            ]
+        }
+    };
+
+    const proof_schema = await agent.createProofSchema(name, version, requested_attributes);
+    console.log(`Schema info: ${JSON.stringify(proof_schema, 0, 1)}`);
+    return "done";
+}
+
 const checkAgent = async () => {
     // Check the username and password by hitting the API
     const agentInfo = await agent.getIdentity();
@@ -79,7 +99,7 @@ switch (process.argv[2]) {
         publishCredentialDefinition();
         break;
     case 'publishProofSchema':
-        publishProofSchema();
+        publishProofSchemav2();
         break;
     default:
         break;
