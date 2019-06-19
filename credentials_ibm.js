@@ -30,6 +30,24 @@ const publishSchema = async () => {
     return "done";
 }
 
+// Only need to run this once against an account
+const publishProofSchema = async () => {
+    const name = "Creative Passport Login request";
+    const version = "0.0.1";
+    const requested_attributes = {
+        myceliaID: {
+            name: 'myceliaID'
+        },
+        email: {
+            name: 'email',
+            restrictions: []
+        }
+    };
+
+    const proof_schema = await agent.createProofSchema(name, version, requested_attributes);
+    console.log(`Schema info: ${JSON.stringify(proof_schema, 0, 1)}`);
+    return "done";
+}
 
 const checkAgent = async () => {
     // Check the username and password by hitting the API
