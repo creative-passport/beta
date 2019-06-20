@@ -24,6 +24,7 @@
     "morgan": "^1.9.1",
     "openssi-websdk": "0.0.3-alpha",
     "passport": "^0.4.0",
+    "passport-custom": "^1.0.5",
     "passport-local": "^1.0.0",
     "path": "^0.12.7"
   }
