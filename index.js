@@ -6,6 +6,7 @@ const fs = require('fs');
 const express = require('express');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
+const CustomStrategy = require('passport-custom').Strategy;
 const path = require('path');
 const bodyParser = require('body-parser');
 const session = require('express-session');
@@ -127,6 +128,22 @@ passport.use(new LocalStrategy(
                 return done(null, false, {
                     message: 'Incorrect password.'
                 });
+            }
+            return done(null, user);
+        });
+    }
+));
+
+
+// Passport Custom Strategy for Credential Authentication
+passport.use('credentialStrategy', new CustomStrategy(
+    function(req, done) {
+        console.log('Passed Email : ' + req.email);
+        User.findOne({
+            username: req.email
+        }, function (err, user) {
+            if (err) {
+                return done(err);
             }
             return done(null, user);
         });
@@ -302,10 +319,38 @@ app.post('/credential_auth', async (req, res) => {
             await agent.updateVerification(verification.id, 'proof_generated');
             await agent.updateVerification(verification.id, 'proof_shared');
         }
+
+        for (const index in finished_verification.info.attributes) {
+            const attr = finished_verification.info.attributes[index];
+
+            console.log(`${attr.cred_def_id ? '*' : ' '}${attr.name} = ${attr.value}`);
+
+            if(attr.name = "email") {
+                console.log('Sign In By Credential');
+                console.log(attr.value);
+                User.findOne({
+                    username: attr.value
+                }, function (err, user) {
+                    if (err) {
+                        //return res.status(500).send("There was a problem adding the document" + err);
+                        req.flash('message', 'That email address has already registered. Please try again, or get in touch.')
+                        res.redirect('/register');
+                    } else {
+                        console.log(user);
+                        req.login(user, function (err) {
+                            if (err) {
+                                console.log(err);
+                            }
+                            return res.redirect('/profile');
+                        });
+                    }
+                });
+            }
+
+        }   
     } catch (error) {
         console.log(error);
     }
-    res.redirect('/');
 });
 
 
