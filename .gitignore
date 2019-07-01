@@ -5,3 +5,5 @@ server.key
 deploy_beta.sh
 deploy_stage.sh
 node_modules
+data
+
