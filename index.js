@@ -17,8 +17,11 @@ const morgan = require('morgan');
 const errorHandler = require('errorhandler');
 const flash = require('connect-flash');
 var express_enforces_ssl = require('express-enforces-ssl');
+const aws = require('aws-sdk');
 
-//Configure mongoose's promise to global promise
+
+// Set up AWS Config
+
 mongoose.promise = global.Promise;
 mongoose.set('useCreateIndex', true);
 
