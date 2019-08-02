@@ -11,6 +11,23 @@ router.use(bodyParser.urlencoded({
 router.use(bodyParser.json());
 const crypto = require('crypto');
 
+const aws = require('aws-sdk');
+
+
+// Set up AWS Config
+// Set the AWS Region
+aws.config.update({
+    accessKeyId: process.env.AWS_ACCESS_KEY,
+    secretAccessKey: process.env.AWS_SECRET,
+    region: 'eu-west-1'
+});
+
+// Create SQS service object
+// Create an SQS service object
+var sqs = new aws.SQS({
+    apiVersion: '2012-11-05'
+});
+
 var User = require('../../models/User');
 var Connection = require('../../models/Connection');
 
@@ -58,6 +75,27 @@ router.post('/register', (req, res) => {
                     if (err) {
                         console.log(err);
                     }
+
+                    // Send a message to the Queue to send Email to confirm email
+                    var params = {
+                        DelaySeconds: 10,
+                        MessageAttributes: {
+                            "emailAddress": {
+                                DataType: "String",
+                                StringValue: req.body.username
+                            }
+                        },
+                        MessageBody: "Confirm a new email address used to register",
+                        QueueUrl: "https://sqs.eu-west-1.amazonaws.com/426201969392/send_confirm_email"
+                    };
+
+                    sqs.sendMessage(params, function (err, data) {
+                        if (err) {
+                            console.log("Error", err);
+                        } else {
+                            console.log("Success", data.MessageId);
+                        }
+                    });
                     return res.redirect('/profile');
                 }); 
             };

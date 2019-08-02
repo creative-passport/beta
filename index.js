@@ -21,6 +21,16 @@ const aws = require('aws-sdk');
 
 
 // Set up AWS Config
+// Set the AWS Region
+aws.config.update({
+            region: 'eu-west-1' 
+        });
+
+// Create SQS service object
+// Create an SQS service object
+var sqs = new aws.SQS({
+    apiVersion: '2012-11-05'
+});
 
 mongoose.promise = global.Promise;
 mongoose.set('useCreateIndex', true);
