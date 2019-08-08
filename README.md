@@ -1,3 +1,9 @@
+# Notes on Development
+# Branch isni_data
+Code to request ISNI data when a user supplies an ISNI number
+Store the returned ISNI data in a record attached to the users Creative Passport Record
+
+
 # Creative Passport Beta Microservices
 
 This codebase prototypes the core microsservices for the Creative Passport.
