@@ -3,7 +3,8 @@
 
 var mongoose = require('mongoose');
 var ISNISchema = new mongoose.Schema({
-
+    user_id: String,
+    isni_data: String
 });
 
 mongoose.model('ISNI', ISNISchema);
