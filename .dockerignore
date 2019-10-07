@@ -1,7 +1,5 @@
 node_modules
 npm-debug.log
-server.cert
-server.key
 deploy_beta.sh
 deploy_stage.sh
 data
