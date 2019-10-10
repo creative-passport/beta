@@ -81,9 +81,9 @@
                             </div>
                         </div>
                         <div class="row text-center mt-4">
-                        <div id="qrcode" style="display:none">
+                            <div id="qrcode" style="display:none">
 
-                        </div>
+                            </div>
                         <script type="text/javascript">
                             new QRCode(document.getElementById("qrcode"), "<%= user.persona %>:<%= user._id %>");
                         </script>
@@ -110,6 +110,7 @@
                                 
                             </div>
                         </div>
+                        
                     </div>
                     <div class="card-footer text-center">
                         <a href="javascript:void()" class="btn-social btn-facebook waves-effect waves-light m-1"><i
@@ -374,6 +375,8 @@
         </div>
     </div>
 
+    <div class="yoti-scan"></div>
+    
     <div class="news">
         <h1>Thank You</h1>
         <p>for creating your Creative Passport Account. Over the next couple of weeks we will be adding a lot more to
@@ -382,7 +385,19 @@
     </div>
 </div>
 
-
+<!-- This script snippet will also be required in your HTML body -->
+<script>
+    window.Yoti.Share.init({
+        "elements": [{
+            "domId": "yoti-scan",
+            "scenarioId": "a0d94d28-3b32-4f0d-8bfa-45841b2c7b34",
+            "clientSdkId": "f8378961-dd6d-4fef-aad0-cfe4490b3dc3",
+            "button": {
+                "label": "Yoti"
+            }
+        }]
+    });
+</script>
 
 </main>
 

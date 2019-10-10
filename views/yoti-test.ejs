@@ -1,0 +1,43 @@
+<!-- views/yoti-test -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <% include ./partials/head %>
+    <!-- Yoti -->
+    <script src="https://www.yoti.com/share/client/"></script>
+</head>
+
+<body class="container">
+
+    <header>
+        <% include ./partials/header %>
+    </header>
+
+    <main>
+        <div id="yoti">
+
+        </div>
+    </main>
+
+    <footer>
+        <% include ./partials/footer %>
+    </footer>
+    
+<!-- This script snippet will also be required in your HTML body -->
+<script>
+    window.Yoti.Share.init({
+        "elements": [{
+            "domId": "yoti",
+            "scenarioId": "a0d94d28-3b32-4f0d-8bfa-45841b2c7b34",
+            "clientSdkId": "f8378961-dd6d-4fef-aad0-cfe4490b3dc3",
+            "button": {
+                "label": "Prove identity with Yoti"
+            }
+        }]
+    });
+</script>
+</body>
+
+</html>

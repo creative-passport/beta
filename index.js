@@ -19,6 +19,17 @@ const flash = require('connect-flash');
 var express_enforces_ssl = require('express-enforces-ssl');
 const aws = require('aws-sdk');
 
+// Yoti Config
+const yoti = require('yoti');
+const CLIENT_SDK_ID = 'f8378961-dd6d-4fef-aad0-cfe4490b3dc3';
+const PEM_PATH = './Creative Passport Cayce-access-security.pem';
+const PEM_KEY = fs.readFileSync(PEM_PATH);
+
+// For SDK version < 3
+//const yotiClient = new yoti(CLIENT_SDK_ID, PEM);
+
+// For SDK version >= 3
+const yotiClient = new yoti.Client(CLIENT_SDK_ID, PEM_KEY);
 
 // Set up AWS Config
 // Set the AWS Region
@@ -366,6 +377,65 @@ app.post('/credential_auth', async (req, res) => {
     }
 });
 
+app.get('/imreal', async (req, res) => {
+    // Call back for Yoti.
+    console.log(req.query.token);
+
+    yotiClient.getActivityDetails(req.query.token)
+        .then((activityDetails) => {
+            console.log(activityDetails);
+            const rememberMeId = activityDetails.getRememberMeId();
+            const parentRememberMeId = activityDetails.getParentRememberMeId();
+            const receiptId = activityDetails.getReceiptId();
+            const timestamp = activityDetails.getTimestamp();
+            const base64SelfieUri = activityDetails.getBase64SelfieUri();
+
+            //const userProfile = activityDetails.getUserProfile(); // deprecated, use getProfile() instead
+            const profile = activityDetails.getProfile();
+
+            const applicationProfile = activityDetails.getApplicationProfile();
+            //const selfieImageData = profile.getSelfie().getValue();
+            const fullName = profile.getFullName().getValue();
+            const familyName = profile.getFamilyName().getValue();
+            const givenNames = profile.getGivenNames().getValue();
+            const phoneNumber = profile.getPhoneNumber().getValue();
+            const emailAddress = profile.getEmailAddress().getValue();
+            //const dateOfBirth = profile.getDateOfBirth().getValue();
+            //const postalAddress = profile.getPostalAddress().getValue();
+            //const structuredPostalAddress = profile.getStructuredPostalAddress().getValue();
+            const gender = profile.getGender().getValue();
+            //const nationality = profile.getNationality().getValue();
+            //const ageVerified = profile.getAgeVerified().getValue();
+            //const documentDetails = profile.getDocumentDetails().getValue();
+            const applicationName = applicationProfile.getName().getValue();
+            const applicationUrl = applicationProfile.getUrl().getValue();
+            const applicationLogo = applicationProfile.getLogo().getValue();
+            const applicationReceiptBgColor = applicationProfile.getReceiptBgColor().getValue();
+
+            // You can retrieve the sources and verifiers for each attribute as follows
+            const givenNamesObj = profile.getGivenNames()
+            const givenNamesSources = givenNamesObj.getSources(); // list/array of anchors
+            const givenNamesVerifiers = givenNamesObj.getVerifiers(); // list/array of anchor
+
+            // You can also retrieve further properties from these respective anchors in the following way:
+            // Retrieving properties of the first anchor
+            //const value = givenNamesSources[0].getValue(); // string
+            //const subtype = givenNamesSources[0].getSubType(); // string
+            //const timestamp = givenNamesSources[0].getSignedTimeStamp().getTimestamp(); // Date object
+            //const originServerCerts = givenNamesSources[0].getOriginServerCerts(); // list of X509 certificates
+
+            console.log('Full Name: ' + fullName);
+            console.log(givenNamesSources);
+            console.log(givenNamesVerifiers);
+            //console.log(documentDetails);
+            res.redirect('/yoti');
+        });
+
+});
+
+app.get('/yoti', async (req, res) => {
+    res.render('yoti-test.ejs');
+});
 
 app.get('/issue', isUserAuthenticated, async (req, res) => {
     try {
