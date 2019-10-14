@@ -521,13 +521,14 @@ app.use((err, req, res) => {
 */
 
 // For deployment
-//app.listen(port, () => console.log(`Creative Passport Core Services listening on port ${port}!`));
+app.listen(port, () => console.log(`Creative Passport Core Services listening on port ${port}!`));
 
 // Running locally on development machine
-
+/*
 https.createServer({
         key: fs.readFileSync('server.key'),
         cert: fs.readFileSync('server.cert')
     }, app).listen(port, () => {
     console.log(`Creative Passport Core Services listening on port ${port}!`)
 });
+*/
