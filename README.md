@@ -1,3 +1,7 @@
+# Project Archived
+
+This project it no longer being developed but is being kept for archival purposes. It will probably contain security vulnerabilities and should not be used.
+
 # Notes on Development
 # Branch isni_data
 Code to request ISNI data when a user supplies an ISNI number
